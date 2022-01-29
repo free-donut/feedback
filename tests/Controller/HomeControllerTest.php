@@ -61,9 +61,9 @@ class HomeControllerTest extends WebTestCase
     public function invalidDataProvider()
     {
         return [
+            [str_repeat("42", 130), '+7(123)000-00-00', 0],
+            ['Arthur Dent', 'oops', 1],
             ['Arthur Dent', '+7(123)000-00-00', 3],
-            ['Dent', 'oops', 1],
-            [str_repeat("42", 130), '+0(123)000-00-00', 0]
         ];
     }
 }
