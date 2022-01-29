@@ -18,7 +18,11 @@ class Appeal
      */
     private $id;
 
-    /**
+    /** 
+     * @Assert\Length(
+     *      max = 256,
+     *      maxMessage = "Длина имени должна быть не более {{ limit }} символов"
+     *      )
      * @ORM\Column(type="string", length=256, nullable=true)
      */
     private $customer;
@@ -36,6 +40,7 @@ class Appeal
     private $phone;
 
     /**
+     * @Assert\Choice({0, 1, 2})
      * @ORM\Column(type="integer", columnDefinition="ENUM(0, 1, 2)", options={"default":0})
      */
     private $status = 0;
