@@ -3,12 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Appeal;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Config\Status;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class AppealType extends AbstractType
@@ -16,7 +15,6 @@ class AppealType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('customer')
             ->add('customer', TextType::class, [
                 'label' => 'Клиент',
                 'required' => false
@@ -27,13 +25,10 @@ class AppealType extends AbstractType
             ]);
         if ($options['showStatus']) {
             $builder
-            ->add('status', ChoiceType::class, array(
-                'choices' => array(
-                    'На модерации' => 0,
-                    'Обработана' => 1,
-                    'Отклонена' => 2,
-                ),
-            ));
+            ->add('status', ChoiceType::class, [
+                'label' => 'Статус',
+                'choices' => array_flip(Appeal::STATUS_NAMES),
+            ]);
         } else {
             $builder
             ->add('status', HiddenType::class, [
