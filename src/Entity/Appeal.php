@@ -18,7 +18,7 @@ class Appeal
      */
     private $id;
 
-    /** 
+    /**
      * @Assert\Length(
      *      max = 256,
      *      maxMessage = "Длина имени должна быть не более {{ limit }} символов"
@@ -44,6 +44,12 @@ class Appeal
      * @ORM\Column(type="integer", columnDefinition="ENUM(0, 1, 2)", options={"default":0})
      */
     private $status = 0;
+
+    public const STATUS_NAMES = [
+            0 => 'На модерации',
+            1 => 'Обработана',
+            2 => 'Отклонена'
+        ];
 
     public function getId(): ?int
     {
