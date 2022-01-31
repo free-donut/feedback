@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список обращений{% endblock %}
+
+{% block body %}
+    <h1>Список обращений</h1>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    {% for appeal in appeals %}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Клиент</th>
+                    <td>{{ appeal.customer }}</td>
+                </tr>
+                <tr>
+                    <th>Тедефон</th>
+                    <td>{{ appeal.phone }}</td>
+                </tr>
+                <tr>
+                    <th>Статус</th>
+                    <td>{{ appeal.status }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="{{ path('appeal_edit', {'id': appeal.id}) }}">Редкатировать</a>
+    {% else %}
+        <tr>
+            <td colspan="5">записи не найдены</td>
+        </tr>
+    {% endfor %}
+
+{{ include('blocks/pagination.html.twig') }}
+{% endblock %}

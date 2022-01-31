@@ -20,6 +20,56 @@ class AppealRepository extends ServiceEntityRepository
         parent::__construct($registry, Appeal::class);
     }
 
+    public function getFilteredQuery($status, $customer, $phone)
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->orderBy('a.id', 'ASC');
+
+        if (isset($status)) {
+            $qb->andWhere('a.status = :status')
+            ->setParameter('status', $status);
+        }
+        if ($phone) {
+            $qb->andWhere('a.phone = :phone')
+            ->setParameter('phone', $phone);
+        }
+        if ($customer) {
+            $qb->andWhere('a.customer = :customer')
+            ->setParameter('customer', $customer);
+        }
+        $qb->orderBy('a.id', 'DESC');
+
+        return $qb->getQuery();
+    }
+
+    public function getAllQuery()
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.id', 'DESC')
+            ->getQuery();
+    }
+
+    public function getPaginatedPages($query, $currentPage = 1, $limit = 3)
+    {
+        $paginator = new Paginator($query);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($currentPage - 1)) // Offset
+            ->setMaxResults($limit); // Limit
+
+        return $paginator;
+    }
+
+    public function getDistinctField($field)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.' . $field)
+            ->andWhere('a.' . $field . ' IS NOT NULL')
+            ->groupBy('a.' . $field)
+            ->getQuery()
+            ->execute();
+    }
+
     public function findOneLatest(): ?Appeal
     {
         return $this->createQueryBuilder('a')

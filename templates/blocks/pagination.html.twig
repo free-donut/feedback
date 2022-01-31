@@ -1,0 +1,18 @@
+{% if maxPages > 1 %}
+{% set queryParams = app.request.query.all %}
+<ul class="pagination pagination-sm">
+    <li {{ currentPage == 1 ? 'class="disabled"' }}>
+        <a href="{{ path('appeal_index', queryParams|merge({page: currentPage-1 < 1 ? 1 : currentPage-1})) }}">«</a>
+    </li>
+
+    {% for i in 1..maxPages %}
+        <li {{ currentPage == i ? 'class="active"' }}>
+            <a href="{{ path('appeal_index', queryParams|merge({page: i})) }}">{{ i }}</a>
+        </li>
+    {% endfor %}
+
+    <li {{ currentPage == maxPages ? 'class="disabled"' }}>
+        <a href="{{ path('appeal_index', queryParams|merge({page: currentPage+1 <= maxPages ? currentPage+1 : currentPage})) }}">»</a>
+    </li>
+</ul>
+{% endif %}
