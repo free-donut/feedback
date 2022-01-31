@@ -1,21 +1,36 @@
 version: '3'
-
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-13}-alpine
+  php-apache:
+    build:
+        context: ./
+    container_name: feedback
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
-      POSTGRES_USER: ${POSTGRES_USER:-symfony}
+        TZ: "Europe/Moscow"
+    ports:
+        - "127.0.0.1:3000:80"
+    networks:
+        - net
     volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+        - ./:/var/www/html
+  db:
+    image: mariadb:10.1
+    container_name: feedback__db
+    volumes:
+        - ./data/:/var/lib/mysql
+    environment:
+        TZ: "Europe/Moscow"
+        MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        MYSQL_DATABASE: 'feedback_db'
+        MYSQL_USER: 'feedback_db'
+        MYSQL_PASSWORD: 'feedback_pass'
+    networks:
+        - net
 
-volumes:
-###> doctrine/doctrine-bundle ###
-  db-data:
-###< doctrine/doctrine-bundle ###
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+          - subnet: 172.101.18.20/24
+    driver_opts:
+          com.docker.network.bridge.name: br-feedback
