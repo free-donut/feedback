@@ -2,14 +2,21 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Appeal;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HomeControllerTest extends WebTestCase
 {
+    private $client;
+
+    public function setUp(): void
+    {
+        $this->client = static::createClient();
+    }
+
     public function testHomePage(): void
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Would it save you a lot of time if I just gave up and went mad now?');
@@ -17,22 +24,31 @@ class HomeControllerTest extends WebTestCase
 
     public function testValidForm()
     {
-        $client = static::createClient();
         // get csrf token
-        $crawler = $client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/');
         $token = $crawler->filter('input[name="appeal[_token]"]');
         $token = $token->attr('value');
 
         $formData = ['appeal' => [
-                'customer' => 'Dent',
+                'customer' => 'Arthur Dent',
                 'phone' => '+7(123)000-00-00',
                 'status' => 1,
                 '_token' => $token
             ]
         ];
 
-        $crawler = $client->request('POST', '/', $formData);
+        $crawler = $this->client->request('POST', '/', $formData);
         $this->assertResponseStatusCodeSame(302);
+        $kernel = self::bootKernel();
+
+        $entityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        $appeal = $entityManager->getRepository(Appeal::class)->findOneLatest();
+        $this->assertEquals('Arthur Dent', $appeal->getCustomer());
+        $this->assertEquals('+7(123)000-00-00', $appeal->getPhone());
+        $this->assertEquals(1, $appeal->getStatus());
     }
 
     /**
@@ -40,9 +56,8 @@ class HomeControllerTest extends WebTestCase
      */
     public function testInvalidForm($customer, $phone, $status)
     {
-        $client = static::createClient();
         // get csrf token
-        $crawler = $client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/');
         $token = $crawler->filter('input[name="appeal[_token]"]');
         $token = $token->attr('value');
 
@@ -54,7 +69,7 @@ class HomeControllerTest extends WebTestCase
             ]
         ];
 
-        $crawler = $client->request('POST', '/', $formData);
+        $crawler = $this->client->request('POST', '/', $formData);
         $this->assertResponseIsUnprocessable();
     }
 
