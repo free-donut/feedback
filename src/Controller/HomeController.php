@@ -27,9 +27,6 @@ class HomeController extends AbstractController
             $entityManager->persist($appeal);
             $entityManager->flush();
 
-
-            // ... perform some action, such as saving the task to the database
-
             return $this->redirectToRoute('home');
         }
 
