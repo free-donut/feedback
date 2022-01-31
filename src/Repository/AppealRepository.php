@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Appeal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +20,14 @@ class AppealRepository extends ServiceEntityRepository
         parent::__construct($registry, Appeal::class);
     }
 
+    public function findOneLatest(): ?Appeal
+    {
+        return $this->createQueryBuilder('a')
+                    ->orderBy('a.id', 'DESC')
+                    ->setMaxResults(1)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
     // /**
     //  * @return Appeal[] Returns an array of Appeal objects
     //  */
