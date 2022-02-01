@@ -19,7 +19,7 @@ class HomeControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Would it save you a lot of time if I just gave up and went mad now?');
+        $this->assertSelectorTextContains('h1', 'The ships hung in the sky in much the same way that bricks don\'t.');
     }
 
     public function testValidForm()
@@ -39,8 +39,8 @@ class HomeControllerTest extends WebTestCase
 
         $crawler = $this->client->request('POST', '/', $formData);
         $this->assertResponseStatusCodeSame(302);
-        $kernel = self::bootKernel();
 
+        $kernel = self::bootKernel();
         $entityManager = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
