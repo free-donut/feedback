@@ -24,13 +24,11 @@ class AdminController extends AbstractController
     {
         $customers = array_column($appealRepository->getDistinctField('customer'), 'customer');
         $phones = array_column($appealRepository->getDistinctField('phone'), 'phone');
-        $existStatuses = array_column($appealRepository->getDistinctField('status'), 'status');
-        $statuses = [];
-        foreach (Appeal::STATUS_NAMES as $index => $name) {
-            if (array_search($index, $existStatuses) !== false) {
-                $statuses[$index] = $name;
-            }
-        }
+        $statuses = array_filter(
+            Appeal::STATUS_NAMES,
+            fn($statusIndex) => $appealRepository->findOneBy(['status' => $statusIndex]) !== null,
+            ARRAY_FILTER_USE_KEY
+        );
 
         $form = $this->createForm(
             AppealFilterType::class,
