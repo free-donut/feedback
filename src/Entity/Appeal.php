@@ -41,7 +41,7 @@ class Appeal
 
     /**
      * @Assert\Choice({0, 1, 2})
-     * @ORM\Column(type="integer", columnDefinition="ENUM(0, 1, 2)", options={"default":0})
+     * @ORM\Column(type="integer", options={"default":0})
      */
     private $status = 0;
 
