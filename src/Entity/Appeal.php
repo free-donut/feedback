@@ -85,6 +85,11 @@ class Appeal
         return $this->status;
     }
 
+    public function getStatusName(): ?string
+    {
+        return self::STATUS_NAMES[$this->status];
+    }
+
     public function setStatus(int $status): self
     {
         $this->status = $status;
