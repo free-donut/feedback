@@ -13,16 +13,19 @@ services:
     volumes:
         - ./:/var/www/html
   db:
-    image: mariadb:10.1
+    image: mariadb:10.6
     container_name: feedback__db
-    volumes:
-        - ./data/:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     environment:
         TZ: "Europe/Moscow"
         MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
         MYSQL_DATABASE: 'feedback_db'
         MYSQL_USER: 'feedback_db'
         MYSQL_PASSWORD: 'feedback_pass'
+    volumes:
+        - ./data/:/var/lib/mysql
+        - ./init:/docker-entrypoint-initdb.d
     networks:
         - net
 
