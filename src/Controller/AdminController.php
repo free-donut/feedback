@@ -45,11 +45,9 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $status = $data['status'] ?? null;
-            $customer = isset($data['customer']) ? $customers[$data['customer']] : null;
-            $phone = isset($data['phone']) ? $phones[$data['phone']] : null;
+            ['status' => $status, 'customer' => $customerIndex, 'phone' => $phoneIndex] = $form->getData();
+            $customer = isset($customerIndex) ? $customers[$customerIndex] : null;
+            $phone = isset($phoneIndex) ? $phones[$phoneIndex] : null;
 
             $query = $appealRepository->getFilteredQuery($status, $customer, $phone);
         } else {
